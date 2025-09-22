@@ -1,32 +1,19 @@
 local Core = exports.vorp_core:GetCore()
 
-function CheckJob(joblist)
-    local job = Core.Callback.TriggerAwait("vorp_crafting:GetJob")
-    if joblist == 0 then
+function CheckJob(joblist, jobSource)
+    if not joblist or joblist == 0 then
         return true
     end
-
-    if joblist ~= 0 then
-        for _, v in pairs(joblist) do
-            if v == job then
-                return true
-            end
-        end
+    jobSource = jobSource or 'server'
+    local job = nil
+    if jobSource == 'client' then
+        job = LocalPlayer.state.Character.Job
+    else
+        job = Core.Callback.TriggerAwait("vorp_crafting:GetJob")
     end
-
-    return false
-end
-
-function CheckJobClient(joblist)
-    if joblist == 0 then
-        return true
-    end
-
-    if joblist ~= 0 then
-        for _, v in pairs(joblist) do
-            if v == LocalPlayer.state.Character.Job then
-                return true
-            end
+    for _, v in pairs(joblist) do
+        if v == job then
+            return true
         end
     end
 
