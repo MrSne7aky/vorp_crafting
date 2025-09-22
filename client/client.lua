@@ -18,7 +18,7 @@ CreateThread(function()
         local Coords = GetEntityCoords(player)
         local campfire = false
         if (not uiopen and not iscrafting) then
-            if Config.CraftingPropsEnabled and CheckJobClient(Config.CampfireJobLock) then -- dont allow check if player dont have job
+            if Config.CraftingPropsEnabled and CheckJob(Config.CampfireJobLock, 'client') then -- dont allow check if player dont have job
                 for _, v in pairs(Config.CraftingProps) do
                     if iscrafting == false and uiopen == false and IsEntityDead(player) == false then
                         if type(v.prop) == "table" then
@@ -37,7 +37,7 @@ CreateThread(function()
                             sleep = 0
                             UIPrompt.activate(v.title)
                             if UiPromptHasStandardModeCompleted(CraftPrompt, 0) then
-                                local jobcheck = CheckJob(Config.CampfireJobLock) -- security check
+                                local jobcheck = CheckJob(Config.CampfireJobLock, 'server') -- security check
                                 if jobcheck then
                                     VUI.OpenUI({ id = v.title:lower() })
                                 end
@@ -49,7 +49,7 @@ CreateThread(function()
 
             local blipcount = 0
             for k, loc in ipairs(Config.Locations) do
-                local jobcheck = CheckJobClient(loc.Job)
+                local jobcheck = CheckJob(loc.Job, 'client')
                 if jobcheck and uiopen == false and IsEntityDead(player) == false then
                     if loc.Blip and blipsadded == false and loc.Blip.enable then
                         blipcount = blipcount + 1
@@ -61,7 +61,7 @@ CreateThread(function()
                         sleep = 0
                         UIPrompt.activate(loc.name)
                         if UiPromptHasStandardModeCompleted(CraftPrompt, 0) then
-                            jobcheck = CheckJob(loc.Job)
+                            jobcheck = CheckJob(loc.Job, 'server')
                             if jobcheck then
                                 VUI.OpenUI(loc)
                             end
